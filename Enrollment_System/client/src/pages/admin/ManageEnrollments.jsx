@@ -1,41 +1,40 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext.jsx";
 import Loader from "../../components/Loader.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../../services/api.js";
 
 export default function ManageEnrollments() {
-  const { token } = useAuth();
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`${API_URL}/enrollments`, {
-      headers: { authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
+    apiRequest("/admin/enrollments", { auth: true })
       .then((data) => {
-        setEnrollments(data);
+        setEnrollments(Array.isArray(data) ? data : []);
+        setError("");
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setEnrollments([]);
         setLoading(false);
       });
-  }, [token]);
+  }, []);
 
   const deleteEnrollment = async (id) => {
     if (!confirm("Are you sure you want to remove this enrollment?")) return;
 
     try {
-      const res = await fetch(`${API_URL}/enrollments/${id}`, {
+      await apiRequest(`/admin/enrollments/${id}`, {
         method: "DELETE",
-        headers: { authorization: `Bearer ${token}` },
+        auth: true,
       });
 
-      if (res.ok) {
-        setEnrollments(
-          enrollments.filter((enrollment) => enrollment._id !== id),
-        );
-      }
+      setEnrollments(
+        enrollments.filter((enrollment) => enrollment._id !== id),
+      );
     } catch (error) {
-      console.error("Error deleting enrollment:", error);
+      setError(error.message);
     }
   };
 
@@ -59,6 +58,11 @@ export default function ManageEnrollments() {
           <h2 className="text-4xl font-bold text-gray-950">
             Manage Enrollments
           </h2>
+          {error && (
+            <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </p>
+          )}
 
           <div className="mt-6 overflow-x-auto">
             <table className="w-full rounded-lg bg-white shadow-sm">
@@ -79,10 +83,21 @@ export default function ManageEnrollments() {
                 </tr>
               </thead>
               <tbody>
-                {enrollments.map((enrollment) => (
+                {enrollments.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-8 text-center text-gray-500" colSpan="4">
+                      No enrollments found.
+                    </td>
+                  </tr>
+                ) : (
+                  enrollments.map((enrollment) => (
                   <tr key={enrollment._id} className="border-t">
-                    <td className="px-4 py-3">{enrollment.student.name}</td>
-                    <td className="px-4 py-3">{enrollment.course.title}</td>
+                    <td className="px-4 py-3">
+                      {enrollment.student?.[0]?.name || "Student unavailable"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {enrollment.course?.[0]?.title || "Course unavailable"}
+                    </td>
                     <td className="px-4 py-3">
                       {new Date(enrollment.enrolledAt).toLocaleDateString()}
                     </td>
@@ -95,7 +110,8 @@ export default function ManageEnrollments() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>

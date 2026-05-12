@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NavLink } from "react-router";
-import { useAuth } from "../../context/AuthContext.jsx";
 import Loader from "../../components/Loader.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../../services/api.js";
 
 const menuItems = [
   { to: "/admin", label: "Dashboard", shortLabel: "D" },
@@ -13,9 +11,9 @@ const menuItems = [
 ];
 
 export default function ManageCourses() {
-  const { token } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     title: "",
@@ -27,46 +25,46 @@ export default function ManageCourses() {
     price: "",
   });
 
-  useEffect(() => {
-    loadCourses();
-  }, []);
-
-  const loadCourses = () => {
-    fetch(`${API_URL}/courses`)
-      .then((res) => res.json())
+  const loadCourses = useCallback(() => {
+    apiRequest("/courses")
       .then((data) => {
-        setCourses(data);
+        setCourses(Array.isArray(data) ? data : []);
+        setError("");
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setCourses([]);
         setLoading(false);
       });
-  };
+  }, []);
+
+  useEffect(() => {
+    loadCourses();
+  }, [loadCourses]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/courses`, {
+      await apiRequest("/courses", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
+        auth: true,
+        body: form,
       });
 
-      if (res.ok) {
-        setShowForm(false);
-        setForm({
-          title: "",
-          description: "",
-          instructor: "",
-          category: "",
-          difficulty: "Beginner",
-          duration: "",
-          price: "",
-        });
-        loadCourses();
-      }
+      setShowForm(false);
+      setForm({
+        title: "",
+        description: "",
+        instructor: "",
+        category: "",
+        difficulty: "Beginner",
+        duration: "",
+        price: "",
+      });
+      loadCourses();
     } catch (error) {
-      console.error("Error creating course:", error);
+      setError(error.message);
     }
   };
 
@@ -74,16 +72,14 @@ export default function ManageCourses() {
     if (!confirm("Are you sure you want to delete this course?")) return;
 
     try {
-      const res = await fetch(`${API_URL}/courses/${id}`, {
+      await apiRequest(`/courses/${id}`, {
         method: "DELETE",
-        headers: { authorization: `Bearer ${token}` },
+        auth: true,
       });
 
-      if (res.ok) {
-        loadCourses();
-      }
+      loadCourses();
     } catch (error) {
-      console.error("Error deleting course:", error);
+      setError(error.message);
     }
   };
 
@@ -144,6 +140,11 @@ export default function ManageCourses() {
                 {showForm ? "Cancel" : "Add Course"}
               </button>
             </div>
+            {error && (
+              <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </p>
+            )}
           </div>
 
           {showForm && (

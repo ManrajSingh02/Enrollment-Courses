@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import Loader from "../components/Loader.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api.js";
 
 export default function MyCourses() {
   const { user } = useAuth();
@@ -11,25 +10,13 @@ export default function MyCourses() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${API_URL}/enrollments/my`, {
-      headers: { authorization: `Bearer ${token}` },
-    })
-      .then(async (res) => {
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to load your courses");
-        }
-
-        return data;
-      })
+    apiRequest("/enrollments/my", { auth: true })
       .then((data) => {
         setEnrollments(Array.isArray(data) ? data : []);
         setLoading(false);
       })
-      .catch(() => {
-        setError("Failed to load your courses");
+      .catch((error) => {
+        setError(error.message || "We could not load your courses right now.");
         setLoading(false);
       });
   }, []);

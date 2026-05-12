@@ -1,0 +1,71 @@
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+export const getStoredToken = () => {
+  const token = localStorage.getItem("token");
+
+  return token && token !== "null" && token !== "undefined" ? token : null;
+};
+
+const friendlyMessages = {
+  "User not found": "We could not find an account with that email.",
+  "Invalid password": "The email or password is incorrect.",
+  "User already exists": "An account with this email already exists.",
+  "Token missing": "Please sign in again to continue.",
+  "No token": "Please sign in again to continue.",
+  Unauthorized: "Your session has expired. Please sign in again.",
+  "Invalid token": "Your session has expired. Please sign in again.",
+  "Already enrolled": "You are already enrolled in this course.",
+  "Course not found": "We could not find that course.",
+  "Invalid course id": "This course link is invalid.",
+};
+
+export const getFriendlyErrorMessage = (message) =>
+  friendlyMessages[message] ||
+  message ||
+  "Something went wrong. Please try again.";
+
+const parseResponse = async (response) => {
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(getFriendlyErrorMessage(data.message));
+  }
+
+  return data;
+};
+
+export const apiRequest = async (path, options = {}) => {
+  const headers = {
+    ...(options.body ? { "Content-Type": "application/json" } : {}),
+    ...options.headers,
+  };
+
+  if (options.auth) {
+    const token = getStoredToken();
+
+    if (!token) {
+      throw new Error("Please sign in again to continue.");
+    }
+
+    headers.authorization = `Bearer ${token}`;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+
+    return parseResponse(response);
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error(
+        "We are having trouble connecting right now. Please try again in a moment.",
+        { cause: error },
+      );
+    }
+
+    throw error;
+  }
+};

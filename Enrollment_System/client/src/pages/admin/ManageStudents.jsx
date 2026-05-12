@@ -1,62 +1,38 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext.jsx";
 import Loader from "../../components/Loader.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../../services/api.js";
 
 export default function ManageStudents() {
-  const { token } = useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`${API_URL}/students`, {
-      headers: { authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
+    apiRequest("/admin/students", { auth: true })
       .then((data) => {
-        setStudents(data);
+        setStudents(Array.isArray(data) ? data : []);
+        setError("");
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setStudents([]);
         setLoading(false);
       });
-  }, [token]);
-
-  const updateStudent = async (id, updates) => {
-    try {
-      const res = await fetch(`${API_URL}/students/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updates),
-      });
-
-      if (res.ok) {
-        setStudents(
-          students.map((student) =>
-            student._id === id ? { ...student, ...updates } : student,
-          ),
-        );
-      }
-    } catch (error) {
-      console.error("Error updating student:", error);
-    }
-  };
+  }, []);
 
   const deleteStudent = async (id) => {
     if (!confirm("Are you sure you want to delete this student?")) return;
 
     try {
-      const res = await fetch(`${API_URL}/students/${id}`, {
+      await apiRequest(`/admin/students/${id}`, {
         method: "DELETE",
-        headers: { authorization: `Bearer ${token}` },
+        auth: true,
       });
 
-      if (res.ok) {
-        setStudents(students.filter((student) => student._id !== id));
-      }
+      setStudents(students.filter((student) => student._id !== id));
     } catch (error) {
-      console.error("Error deleting student:", error);
+      setError(error.message);
     }
   };
 
@@ -78,6 +54,11 @@ export default function ManageStudents() {
         </aside>
         <section className="flex-1">
           <h2 className="text-4xl font-bold text-gray-950">Manage Students</h2>
+          {error && (
+            <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </p>
+          )}
 
           <div className="mt-6 overflow-x-auto">
             <table className="w-full rounded-lg bg-white shadow-sm">
@@ -98,10 +79,17 @@ export default function ManageStudents() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
+                {students.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-8 text-center text-gray-500" colSpan="4">
+                      No students found.
+                    </td>
+                  </tr>
+                ) : (
+                  students.map((student) => (
                   <tr key={student._id} className="border-t">
-                    <td className="px-4 py-3">{student.name}</td>
-                    <td className="px-4 py-3">{student.email}</td>
+                    <td className="px-4 py-3">{student.name || "Name unavailable"}</td>
+                    <td className="px-4 py-3">{student.email || "Email unavailable"}</td>
                     <td className="px-4 py-3">{student.age || "N/A"}</td>
                     <td className="px-4 py-3">
                       <button
@@ -112,7 +100,8 @@ export default function ManageStudents() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>

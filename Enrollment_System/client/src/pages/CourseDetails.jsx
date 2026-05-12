@@ -2,29 +2,22 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
 import Loader from "../components/Loader.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api.js";
 
 export default function CourseDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [enrolling, setEnrolling] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/courses/${id}`)
-      .then(async (res) => {
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to load course details");
-        }
-
+    apiRequest(`/courses/${id}`)
+      .then((data) => {
         if (!data?._id) {
-          throw new Error("Course not found");
+          throw new Error("We could not find that course.");
         }
 
         return data;
@@ -34,7 +27,7 @@ export default function CourseDetails() {
         setLoading(false);
       })
       .catch((error) => {
-        setError(error.message || "Failed to load course details");
+        setError(error.message || "We could not load this course right now.");
         setLoading(false);
       });
   }, [id]);
@@ -47,27 +40,16 @@ export default function CourseDetails() {
 
     setEnrolling(true);
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/enrollments`, {
+      await apiRequest("/enrollments", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ courseId: id }),
+        auth: true,
+        body: { courseId: id },
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Enrollment failed");
-        return;
-      }
 
       alert("Successfully enrolled in the course!");
       navigate("/my-courses");
     } catch (error) {
-      setError("Enrollment failed. Please try again.");
+      setError(error.message || "We could not enroll you right now.");
     } finally {
       setEnrolling(false);
     }

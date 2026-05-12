@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import CourseCard from "../components/CourseCard.jsx";
 import Loader from "../components/Loader.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api.js";
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
@@ -12,22 +11,23 @@ export default function Courses() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
-    fetch(`${API_URL}/courses`)
-      .then((res) => res.json())
+    apiRequest("/courses")
       .then((data) => {
-        setCourses(data);
+        setCourses(Array.isArray(data) ? data : []);
         setLoading(false);
       })
-      .catch((error) => {
-        setError("Failed to load courses");
+      .catch(() => {
+        setError("We could not load courses right now. Please try again soon.");
         setLoading(false);
       });
   }, []);
 
   const filteredCourses = courses.filter((course) => {
+    const title = course.title || "";
+    const description = course.description || "";
     const matchesSearch =
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchTerm.toLowerCase());
+      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory =
       selectedCategory === "All" || course.category === selectedCategory;
     return matchesSearch && matchesCategory;

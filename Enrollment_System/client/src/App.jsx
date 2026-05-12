@@ -8,6 +8,7 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import MyCourses from "./pages/MyCourses.jsx";
 import Register from "./pages/Register.jsx";
+import AccessDenied from "./pages/AccessDenied.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import ManageCourses from "./pages/admin/ManageCourses.jsx";
 import ManageEnrollments from "./pages/admin/ManageEnrollments.jsx";
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/courses/:id" element={<CourseDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/access-denied" element={<AccessDenied />} />
         <Route
           path="/my-courses"
           element={

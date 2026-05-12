@@ -20,13 +20,12 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* PUBLIC ROUTES */}
+      
 
           <Route path="/" element={<Login />} />
 
           <Route path="/register" element={<Register />} />
 
-          {/* PROTECTED ROUTES */}
 
           <Route
             path="/dashboard"

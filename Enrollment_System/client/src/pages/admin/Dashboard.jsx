@@ -1,24 +1,27 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router";
-import { useAuth } from "../../context/AuthContext.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../../services/api.js";
 
 export default function Dashboard() {
-  const { token } = useAuth();
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalCourses: 0,
     totalEnrollments: 0,
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`${API_URL}/admin/stats`, {
-      headers: { authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setStats(data));
-  }, [token]);
+    apiRequest("/admin/dashboard", { auth: true })
+      .then((data) => {
+        setStats({
+          totalStudents: data.totalStudents || 0,
+          totalCourses: data.totalCourses || 0,
+          totalEnrollments: data.totalEnrollments || 0,
+        });
+        setError("");
+      })
+      .catch((error) => setError(error.message));
+  }, []);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
@@ -168,6 +171,11 @@ export default function Dashboard() {
             <p className="text-gray-600">
               Welcome back! Here's what's happening with your academy.
             </p>
+            {error && (
+              <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </p>
+            )}
           </div>
 
           {/* Stats Cards */}

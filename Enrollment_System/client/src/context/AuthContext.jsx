@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { apiRequest, getStoredToken } from "../services/api.js";
 
 const AuthContext = createContext();
+
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -12,39 +14,43 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(getStoredToken);
+  const [loading, setLoading] = useState(() => Boolean(getStoredToken()));
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-  
-      fetch(`${import.meta.env.VITE_API_URL}/auth/verify`, {
-        headers: { authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.user) {
-            setUser(data.user);
-          } else {
-            localStorage.removeItem("token");
-          }
-        })
-        .catch(() => {
-          localStorage.removeItem("token");
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+    const storedToken = getStoredToken();
+
+    if (!storedToken) {
+      return;
     }
+
+    apiRequest("/auth/verify", { auth: true })
+      .then((data) => {
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          localStorage.removeItem("token");
+          setToken(null);
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        setToken(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const login = (data) => {
-    localStorage.setItem("token", data.token);
-    setUser(data.user);
+    if (data?.token && data?.user) {
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+      setUser(data.user);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    setToken(null);
     setUser(null);
   };
 
@@ -52,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     logout,
+    token,
     isAuthenticated: !!user,
     isAdmin: user?.role === "admin",
     loading,

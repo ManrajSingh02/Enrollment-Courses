@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api.js";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,26 +16,16 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const data = await apiRequest("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: form,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Login failed");
-        setLoading(false);
-        return;
-      }
 
       login(data);
       navigate("/");
     } catch (error) {
-      setError(
-        "Backend is not reachable. Please start the server and check MongoDB connection.",
-      );
+      setError(error.message);
+    } finally {
       setLoading(false);
     }
   };
