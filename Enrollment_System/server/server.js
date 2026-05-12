@@ -14,13 +14,6 @@ dotenv.config();
 const app = express();
 dns.setServers(["0.0.0.0", "8.8.8.8"]);
 
-const cors = require("cors");
-app.use(
-  cors({
-    origin: "https://yourfrontend.netlify.app",
-    credentials: true,
-  })
-);
 app.use(cors());
 app.use(express.json());
 
