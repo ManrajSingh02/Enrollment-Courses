@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 import Layout from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function NoteDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { user } = useAuth();
 
@@ -16,25 +16,28 @@ export default function NoteDetails() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchNote();
-  }, []);
+    const fetchNote = async () => {
+      try {
+        const data = await apiRequest(`/notes/${id}`, { auth: true });
 
-  const fetchNote = async () => {
+        setNote(data);
+        setError("");
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchNote();
+  }, [id]);
+
+  const deleteNote = async () => {
     try {
-      const response = await fetch(`${API_URL}/notes/${id}`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
+      await apiRequest(`/notes/${id}`, {
+        method: "DELETE",
+        auth: true,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to load note");
-      }
-
-      setNote(data);
-      setError("");
+      navigate("/notes");
     } catch (error) {
       setError(error.message);
     }
@@ -74,7 +77,10 @@ export default function NoteDetails() {
           )}
 
           {user?.role === "admin" && (
-            <button className="bg-red-500 text-white px-4 py-2 rounded">
+            <button
+              onClick={deleteNote}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
               Delete
             </button>
           )}

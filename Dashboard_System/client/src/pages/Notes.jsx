@@ -1,61 +1,41 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/notes`,
-        {
-          headers: {
-            Authorization:
-              localStorage.getItem("token"),
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to load notes");
-      }
+      const data = await apiRequest("/notes", { auth: true });
 
       setNotes(Array.isArray(data) ? data : []);
       setError("");
     } catch (error) {
       setNotes([]);
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchNotes();
+  }, [fetchNotes]);
 
   const deleteNote = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/notes/${id}`, {
+      await apiRequest(`/notes/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization:
-            localStorage.getItem("token"),
-        },
+        auth: true,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to delete note");
-      }
 
       fetchNotes();
     } catch (error) {
@@ -75,7 +55,12 @@ export default function Notes() {
         </p>
       )}
 
-      <div className="grid gap-4">
+      {loading ? (
+        <p className="text-gray-600">Loading notes...</p>
+      ) : notes.length === 0 && !error ? (
+        <p className="text-gray-600">No notes found.</p>
+      ) : (
+        <div className="grid gap-4">
         {notes.map((note) => (
           <div
             key={note.id}
@@ -120,7 +105,8 @@ export default function Notes() {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </Layout>
   );
 }

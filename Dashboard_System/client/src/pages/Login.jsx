@@ -3,8 +3,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router";
 
 import { useAuth } from "../context/AuthContext";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,6 +16,7 @@ export default function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,25 +24,16 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const data = await apiRequest("/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+        body: form,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
 
       login(data);
 
       navigate("/dashboard");
     } catch (error) {
-      alert(error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -57,6 +48,12 @@ export default function Login() {
         <h1 className="text-4xl font-bold text-center mb-2"> Login</h1>
 
         <p className="text-center text-gray-500 mb-8">Login to continue</p>
+
+        {error && (
+          <p className="mb-4 text-center text-red-500">
+            {error}
+          </p>
+        )}
 
         <input
           type="email"

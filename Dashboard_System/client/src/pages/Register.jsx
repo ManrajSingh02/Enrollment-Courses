@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { useAuth } from "../context/AuthContext";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -15,30 +14,26 @@ export default function Register() {
     password: "",
     role: "viewer",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
+      const data = await apiRequest("/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+        body: form,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
 
       login(data);
 
       navigate("/dashboard");
     } catch (error) {
-      alert(error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,6 +44,12 @@ export default function Register() {
         className="bg-white shadow-xl rounded-xl p-8 w-96"
       >
         <h1 className="text-3xl font-bold mb-6 text-center">Register</h1>
+
+        {error && (
+          <p className="mb-4 text-center text-red-500">
+            {error}
+          </p>
+        )}
 
         <input
           type="email"
@@ -90,8 +91,11 @@ export default function Register() {
           <option value="admin">Admin</option>
         </select>
 
-        <button className="bg-black text-white w-full py-3 rounded">
-          Register
+        <button
+          disabled={loading}
+          className="bg-black text-white w-full py-3 rounded"
+        >
+          {loading ? "Registering..." : "Register"}
         </button>
 
         <p className="mt-4 text-center">

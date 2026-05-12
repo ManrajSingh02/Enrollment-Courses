@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function CreateNote() {
   const navigate = useNavigate();
@@ -17,22 +16,11 @@ export default function CreateNote() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/notes`, {
+      await apiRequest("/notes", {
         method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-          Authorization:
-            localStorage.getItem("token"),
-        },
-        body: JSON.stringify(form),
+        auth: true,
+        body: form,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to create note");
-      }
 
       navigate("/notes");
     } catch (error) {

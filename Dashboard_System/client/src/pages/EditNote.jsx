@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { useNavigate, useParams } from "react-router";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function EditNote() {
   const { id } = useParams();
@@ -16,51 +15,32 @@ export default function EditNote() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchNote();
-  }, []);
+    const fetchNote = async () => {
+      try {
+        const data = await apiRequest(`/notes/${id}`, { auth: true });
 
-  const fetchNote = async () => {
-    try {
-      const response = await fetch(`${API_URL}/notes/${id}`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to load note");
+        setForm({
+          title: data.title || "",
+          content: data.content || "",
+        });
+        setError("");
+      } catch (error) {
+        setError(error.message);
       }
+    };
 
-      setForm({
-        title: data.title || "",
-        content: data.content || "",
-      });
-      setError("");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+    fetchNote();
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/notes/${id}`, {
+      await apiRequest(`/notes/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify(form),
+        auth: true,
+        body: form,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update note");
-      }
 
       navigate("/notes");
     } catch (error) {

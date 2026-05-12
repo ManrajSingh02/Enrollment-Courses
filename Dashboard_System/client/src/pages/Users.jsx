@@ -1,35 +1,32 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "../services/api";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/users`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      });
+      const data = await apiRequest("/users", { auth: true });
 
-      const data = await response.json();
-
-      setUsers(data);
+      setUsers(Array.isArray(data) ? data : []);
+      setError("");
     } catch (error) {
-      console.log(error);
+      setError(error.message);
+      setUsers([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUsers();
+  }, [fetchUsers]);
 
   const removeUser = async (id) => {
     const confirmDelete = window.confirm(
@@ -39,20 +36,16 @@ export default function Users() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`${API_URL}/users/${id}`, {
+      const data = await apiRequest(`/users/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
+        auth: true,
       });
-
-      const data = await response.json();
 
       alert(data.message);
 
-      setUsers(users.filter((user) => user._id !== id));
+      setUsers(users.filter((user) => user.id !== id));
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
@@ -60,6 +53,12 @@ export default function Users() {
     <Layout>
       <div className="bg-white p-6 rounded-2xl shadow">
         <h1 className="text-3xl font-bold mb-6">User Management</h1>
+
+        {error && (
+          <p className="mb-4 text-red-500">
+            {error}
+          </p>
+        )}
 
         {loading ? (
           <p>Loading users...</p>
@@ -69,7 +68,7 @@ export default function Users() {
           <div className="space-y-4">
             {users.map((user) => (
               <div
-                key={user._id}
+                key={user.id}
                 className="border border-gray-200 rounded-xl p-4 flex justify-between items-center"
               >
                 <div>
@@ -79,7 +78,7 @@ export default function Users() {
                 </div>
 
                 <button
-                  onClick={() => removeUser(user._id)}
+                  onClick={() => removeUser(user.id)}
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                 >
                   Remove

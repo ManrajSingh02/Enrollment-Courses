@@ -70,7 +70,10 @@ export const register = async (req, res) => {
 
     const result = await users.insertOne(newUser);
 
-    res.status(201).json(formatUser({ ...newUser, _id: result.insertedId }));
+    const createdUser = { ...newUser, _id: result.insertedId };
+    const token = createToken(createdUser);
+
+    res.status(201).json({ token, user: formatUser(createdUser) });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ message: "User already exists" });
@@ -92,7 +95,9 @@ export const register = async (req, res) => {
 
     sampleUsers.push(user);
 
-    res.status(201).json(formatUser(user));
+    const token = createToken(user);
+
+    res.status(201).json({ token, user: formatUser(user) });
   }
 };
 
