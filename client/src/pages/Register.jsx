@@ -56,7 +56,7 @@ export default function Register() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Create your account..
+            Create your account
           </h1>
           <p className="text-gray-600 mt-2">
             Join thousands of learners worldwide
