@@ -30,7 +30,9 @@ export default function ManageStudents() {
         auth: true,
       });
 
-      setStudents(students.filter((student) => student._id !== id));
+      setStudents((currentStudents) =>
+        currentStudents.filter((student) => student._id !== id),
+      );
     } catch (error) {
       setError(error.message);
     }

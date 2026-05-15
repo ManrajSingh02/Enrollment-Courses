@@ -1,16 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiRequest, getStoredToken } from "../services/api.js";
-
-const AuthContext = createContext();
-
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+import { AuthContext } from "./auth-context.js";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -40,29 +30,32 @@ export const AuthProvider = ({ children }) => {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = (data) => {
+  const login = useCallback((data) => {
     if (data?.token && data?.user) {
       localStorage.setItem("token", data.token);
       setToken(data.token);
       setUser(data.user);
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
-  };
+  }, []);
 
-  const value = {
-    user,
-    login,
-    logout,
-    token,
-    isAuthenticated: !!user,
-    isAdmin: user?.role === "admin",
-    loading,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      login,
+      logout,
+      token,
+      isAuthenticated: Boolean(user),
+      isAdmin: user?.role === "admin",
+      loading,
+    }),
+    [loading, login, logout, token, user],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

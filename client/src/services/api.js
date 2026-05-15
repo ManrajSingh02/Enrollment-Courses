@@ -35,12 +35,13 @@ const parseResponse = async (response) => {
 };
 
 export const apiRequest = async (path, options = {}) => {
+  const { auth, body, headers: customHeaders, ...fetchOptions } = options;
   const headers = {
-    ...(options.body ? { "Content-Type": "application/json" } : {}),
-    ...options.headers,
+    ...(body ? { "Content-Type": "application/json" } : {}),
+    ...customHeaders,
   };
 
-  if (options.auth) {
+  if (auth) {
     const token = getStoredToken();
 
     if (!token) {
@@ -52,9 +53,9 @@ export const apiRequest = async (path, options = {}) => {
 
   try {
     const response = await fetch(`${API_URL}${path}`, {
-      ...options,
+      ...fetchOptions,
       headers,
-      body: options.body ? JSON.stringify(options.body) : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
 
     return parseResponse(response);

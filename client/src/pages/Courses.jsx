@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import CourseCard from "../components/CourseCard.jsx";
 import Loader from "../components/Loader.jsx";
 import { apiRequest } from "../services/api.js";
@@ -9,6 +9,7 @@ export default function Courses() {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const deferredSearchTerm = useDeferredValue(searchTerm);
 
   useEffect(() => {
     apiRequest("/courses")
@@ -22,21 +23,32 @@ export default function Courses() {
       });
   }, []);
 
-  const filteredCourses = courses.filter((course) => {
-    const title = course.title || "";
-    const description = course.description || "";
-    const matchesSearch =
-      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || course.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const normalizedSearchTerm = deferredSearchTerm.trim().toLowerCase();
 
-  const categories = [
-    "All",
-    ...new Set(courses.map((course) => course.category).filter(Boolean)),
-  ];
+  const filteredCourses = useMemo(
+    () =>
+      courses.filter((course) => {
+        const title = course.title || "";
+        const description = course.description || "";
+        const matchesSearch =
+          normalizedSearchTerm.length === 0 ||
+          title.toLowerCase().includes(normalizedSearchTerm) ||
+          description.toLowerCase().includes(normalizedSearchTerm);
+        const matchesCategory =
+          selectedCategory === "All" || course.category === selectedCategory;
+
+        return matchesSearch && matchesCategory;
+      }),
+    [courses, normalizedSearchTerm, selectedCategory],
+  );
+
+  const categories = useMemo(
+    () => [
+      "All",
+      ...new Set(courses.map((course) => course.category).filter(Boolean)),
+    ],
+    [courses],
+  );
 
   if (loading) return <Loader />;
   if (error)

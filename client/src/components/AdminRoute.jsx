@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/useAuth.js";
 import Loader from "./Loader.jsx";
 
 export default function AdminRoute({ children }) {

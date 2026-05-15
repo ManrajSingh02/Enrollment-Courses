@@ -30,8 +30,8 @@ export default function ManageEnrollments() {
         auth: true,
       });
 
-      setEnrollments(
-        enrollments.filter((enrollment) => enrollment._id !== id),
+      setEnrollments((currentEnrollments) =>
+        currentEnrollments.filter((enrollment) => enrollment._id !== id),
       );
     } catch (error) {
       setError(error.message);

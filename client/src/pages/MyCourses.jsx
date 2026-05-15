@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/useAuth.js";
 import Loader from "../components/Loader.jsx";
 import { apiRequest } from "../services/api.js";
 
