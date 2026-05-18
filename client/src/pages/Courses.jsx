@@ -12,7 +12,7 @@ export default function Courses() {
   const deferredSearchTerm = useDeferredValue(searchTerm);
 
   useEffect(() => {
-    apiRequest("/courses")
+    apiRequest("/api/courses")
       .then((data) => {
         setCourses(Array.isArray(data) ? data : []);
         setLoading(false);
