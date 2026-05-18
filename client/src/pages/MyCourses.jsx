@@ -10,7 +10,7 @@ export default function MyCourses() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    apiRequest("/api/enrollments/my", { auth: true })
+    apiRequest("/enrollments/my", { auth: true })
       .then((data) => {
         setEnrollments(Array.isArray(data) ? data : []);
         setLoading(false);

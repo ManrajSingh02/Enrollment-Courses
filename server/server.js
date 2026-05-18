@@ -18,7 +18,7 @@ dns.setServers(["0.0.0.0", "8.8.8.8"]);
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
 app.use("/courses", courseRoutes);
 app.use("/enrollments", enrollmentRoutes);
 app.use("/admin", adminRoutes);
