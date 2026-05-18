@@ -26,7 +26,7 @@ export default function ManageCourses() {
   });
 
   const loadCourses = useCallback(() => {
-    apiRequest("/courses")
+    apiRequest("/api/courses")
       .then((data) => {
         setCourses(Array.isArray(data) ? data : []);
         setError("");

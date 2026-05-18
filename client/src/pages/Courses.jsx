@@ -12,7 +12,7 @@ export default function Courses() {
   const deferredSearchTerm = useDeferredValue(searchTerm);
 
   useEffect(() => {
-    apiRequest("/courses")
+    apiRequest("/api/courses")
       .then((data) => {
         setCourses(Array.isArray(data) ? data : []);
         setLoading(false);
@@ -95,7 +95,6 @@ export default function Courses() {
           </p>
         </div>
 
-   
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
@@ -139,14 +138,12 @@ export default function Courses() {
           </div>
         </div>
 
-       
         <div className="mb-6">
           <p className="text-gray-600">
             Showing {filteredCourses.length} of {courses.length} courses
           </p>
         </div>
 
-       
         {filteredCourses.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
