@@ -88,7 +88,7 @@ export default function ManageCourses() {
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
       <div className="flex">
-        {/* Modern Sidebar */}
+  
         <aside className="w-72 bg-white shadow-xl border-r border-gray-100">
           <div className="p-8">
             <div className="flex items-center gap-3 mb-8">

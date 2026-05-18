@@ -71,7 +71,7 @@ export default function Courses() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Oops! Something went wrong
+             Something went wrong
           </h2>
           <p className="text-gray-600">{error}</p>
         </div>

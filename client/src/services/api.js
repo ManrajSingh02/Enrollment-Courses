@@ -9,14 +9,6 @@ export const getStoredToken = () => {
 const friendlyMessages = {
   "User not found": "We could not find an account with that email.",
   "Invalid password": "The email or password is incorrect.",
-  "User already exists": "An account with this email already exists.",
-  "Token missing": "Please sign in again to continue.",
-  "No token": "Please sign in again to continue.",
-  Unauthorized: "Your session has expired. Please sign in again.",
-  "Invalid token": "Your session has expired. Please sign in again.",
-  "Already enrolled": "You are already enrolled in this course.",
-  "Course not found": "We could not find that course.",
-  "Invalid course id": "This course link is invalid.",
 };
 
 export const getFriendlyErrorMessage = (message) =>

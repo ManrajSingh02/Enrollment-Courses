@@ -162,7 +162,6 @@ export default function Dashboard() {
           </div>
         </aside>
 
-        {/* Main Content */}
         <main className="flex-1 p-8">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -178,7 +177,6 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
