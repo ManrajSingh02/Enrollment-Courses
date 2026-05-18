@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+
 import dns from "node:dns";
 dotenv.config();
 
@@ -17,7 +18,7 @@ dns.setServers(["0.0.0.0", "8.8.8.8"]);
 app.use(cors());
 app.use(express.json());
 
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/courses", courseRoutes);
 app.use("/enrollments", enrollmentRoutes);
 app.use("/admin", adminRoutes);
