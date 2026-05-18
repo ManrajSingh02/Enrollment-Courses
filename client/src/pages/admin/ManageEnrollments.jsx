@@ -8,7 +8,7 @@ export default function ManageEnrollments() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    apiRequest("/api/admin/enrollments", { auth: true })
+    apiRequest("/admin/enrollments", { auth: true })
       .then((data) => {
         setEnrollments(Array.isArray(data) ? data : []);
         setError("");

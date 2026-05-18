@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    apiRequest("/api/admin/dashboard", { auth: true })
+    apiRequest("/admin/dashboard", { auth: true })
       .then((data) => {
         setStats({
           totalStudents: data.totalStudents || 0,

@@ -14,7 +14,7 @@ export default function CourseDetails() {
   const [enrolling, setEnrolling] = useState(false);
 
   useEffect(() => {
-    apiRequest(`/api/courses/${id}`)
+    apiRequest(`/courses/${id}`)
       .then((data) => {
         if (!data?._id) {
           throw new Error("We could not find that course.");

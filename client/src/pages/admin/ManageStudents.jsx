@@ -8,7 +8,7 @@ export default function ManageStudents() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    apiRequest("/api/admin/students", { auth: true })
+    apiRequest("/admin/students", { auth: true })
       .then((data) => {
         setStudents(Array.isArray(data) ? data : []);
         setError("");
