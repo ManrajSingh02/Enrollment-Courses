@@ -316,7 +316,7 @@ export default function Dashboard() {
                 <div>
                   <p className="font-medium text-gray-900">New course added</p>
                   <p className="text-sm text-gray-600">
-                    Advanced JavaScript course was published
+                    Advanced JavaScript course was published.
                   </p>
                 </div>
                 <span className="text-sm text-gray-500 ml-auto">1 day ago</span>
