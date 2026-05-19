@@ -26,26 +26,37 @@ export default function Login() {
 
       setLoading(true);
 
-      const res = await fetch(
-        `${API}/auth/login`,
-        {
-          method: "POST",
+     const res = await fetch(
+  `${API}/auth/login`,
+  {
+    method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
 
-          body: JSON.stringify(form),
-        }
-      );
+    body: JSON.stringify(form),
+  }
+);
 
-      const data = await res.json();
+const text =
+  await res.text();
 
-      if (!res.ok) {
-        alert(data.message);
-        return;
-      }
+let data;
+
+try {
+
+  data = JSON.parse(text);
+
+} catch {
+
+  alert(
+    "Backend deployment error"
+  );
+
+  return;
+}
 
       localStorage.setItem(
         "token",
