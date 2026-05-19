@@ -178,7 +178,7 @@ export default function CourseDetails() {
         <img
           src={course.image}
           alt={course.title}
-          className="w-full h-[450px] object-cover rounded-[40px] shadow-2xl"
+          className="w-full h-112.5 object-cover rounded-[40px] shadow-2xl"
         />
 
       </div>
