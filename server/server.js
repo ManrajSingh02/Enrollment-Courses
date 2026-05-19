@@ -8,23 +8,21 @@ import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-
 import dns from "node:dns";
 dotenv.config();
-
-const app = express();
 dns.setServers(["0.0.0.0", "8.8.8.8"]);
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/auth", authRoutes);
-app.use("/courses", courseRoutes);
-app.use("/enrollments", enrollmentRoutes);
-app.use("/admin", adminRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/admin", adminRoutes);
 
-const startServer = async () => {
-  await connectDB();
+const startServer = () => {
+  connectDB();
 
   app.listen(process.env.PORT, () => {
     console.log(`Server running on ${process.env.PORT}`);

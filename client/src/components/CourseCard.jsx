@@ -1,53 +1,38 @@
 import { Link } from "react-router";
 
 export default function CourseCard({ course }) {
-  if (!course) return null;
-
   return (
-    <div
-      style={{
-        background: "#0f172a",
-        borderRadius: "12px",
-        padding: "20px",
-        color: "white",
-        border: "1px solid #1e293b",
-      }}
-    >
-      <div style={{ fontSize: "50px" }}>
-        {course.thumbnail}
-      </div>
+    <div className="bg-[#081028] rounded-xl overflow-hidden shadow-lg">
 
-      <h2>{course.title}</h2>
+      {/* Course Image */}
+      <img
+        src={course.image}
+        alt={course.title}
+        className="w-full h-48 object-cover"
+      />
 
-      <p>{course.description}</p>
+      <div className="p-5">
+        <h2 className="text-white text-xl font-bold">
+          {course.title}
+        </h2>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "10px",
-        }}
-      >
-        <span>{course.category}</span>
-        <span>₹{course.price}</span>
-      </div>
+        <p className="text-gray-300 mt-2 line-clamp-3">
+          {course.description}
+        </p>
 
-      <Link to={`/courses/${course._id}`}>
-        <button
-          style={{
-            marginTop: "15px",
-            width: "100%",
-            padding: "10px",
-            background: "#0ea5e9",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
+        <div className="flex justify-between mt-4 text-white">
+          <span>{course.category}</span>
+
+          <span>₹{course.price}</span>
+        </div>
+
+        <Link
+          to={`/course/${course._id}`}
+          className="block text-center bg-sky-500 hover:bg-sky-600 text-white py-3 rounded-lg mt-5"
         >
-          View Course
-        </button>
-      </Link>
+          View Details
+        </Link>
+      </div>
     </div>
   );
 }

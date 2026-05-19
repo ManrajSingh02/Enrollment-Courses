@@ -1,123 +1,152 @@
-import { NavLink } from "react-router";
+import { Link } from "react-router";
 
 export default function Home() {
-  const features = [
-    {
-      icon: "Book",
-      title: "Expert Teachers",
-      description:
-        "Learn from skilled instructors who explain each topic clearly.",
-      cardClass: "from-blue-50 to-indigo-50",
-      iconClass: "from-blue-600 to-indigo-600",
-    },
-    {
-      icon: "Time",
-      title: "Learn Anytime",
-      description:
-        "Study at your own speed and continue whenever you are ready.",
-      cardClass: "from-green-50 to-emerald-50",
-      iconClass: "from-green-600 to-emerald-600",
-    },
-    {
-      icon: "Done",
-      title: "Build Skills",
-      description:
-        "Complete courses and improve the skills you need for your goals.",
-      cardClass: "from-purple-50 to-pink-50",
-      iconClass: "from-purple-600 to-pink-600",
-    },
-  ];
+  const token = localStorage.getItem("token");
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-r from-blue-600/5 to-indigo-600/5"></div>
-        <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32">
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="mb-8 flex justify-center">
-              <div className="rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-4 text-lg font-bold text-white shadow-lg">
-                CourseNest
-              </div>
-            </div>
-
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Learn New Skills with
-              <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                {" "}
-                CourseNest
-              </span>
+    <div className="min-h-screen bg-[#f8fafc]">
+     
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          
+          <div>
+            <h1 className="text-6xl font-extrabold leading-tight text-[#0f172a]">
+              Learn New Skills
+              <span className="text-blue-500"> Online</span>
             </h1>
 
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p className="mt-6 text-lg text-gray-600 leading-relaxed">
               Browse courses, enroll easily, and learn step by step at your own
-              pace.
+              pace with our premium learning platform.
             </p>
 
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <NavLink
+            <div className="flex gap-5 mt-8">
+              <Link
                 to="/courses"
-                className="rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-8 py-4 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl shadow-lg"
               >
                 Explore Courses
-              </NavLink>
-              <NavLink
-                to="/register"
-                className="rounded-xl border-2 border-gray-300 bg-white px-8 py-4 text-base font-semibold text-gray-900 shadow-sm hover:border-gray-400 hover:shadow-md transition-all duration-200"
-              >
-                Create Account
-              </NavLink>
+              </Link>
+
+              {!token && (
+                <Link
+                  to="/register"
+                  className="bg-white border border-gray-300 hover:bg-gray-100 px-8 py-4 rounded-2xl shadow"
+                >
+                  Create Account
+                </Link>
+              )}
+            </div>
+          </div>
+
+        
+          <div className="flex justify-center">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 w-[320px] h-[320px] rounded-[40px] shadow-2xl flex items-center justify-center">
+              <h2 className="text-white text-5xl font-extrabold">CourseNest</h2>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-white">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mx-auto max-w-2xl text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Why Choose CourseNest?
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              A simple way to find courses and start learning
+    
+      <section className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="bg-white p-8 rounded-3xl shadow">
+            <div className="text-5xl">📚</div>
+
+            <h3 className="text-2xl font-bold mt-5">20+ Courses</h3>
+
+            <p className="mt-3 text-gray-600">
+              Explore premium courses from web development to AI and
+              cybersecurity.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className={`rounded-2xl bg-linear-to-br ${feature.cardClass} p-8 text-center shadow-sm border border-gray-100`}
-              >
-                <div
-                  className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-r ${feature.iconClass} text-sm font-bold text-white`}
-                >
-                  {feature.icon}
-                </div>
-                <h3 className="mb-3 text-xl font-semibold text-gray-900">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
+          <div className="bg-white p-8 rounded-3xl shadow">
+            <div className="text-5xl">🎓</div>
+
+            <h3 className="text-2xl font-bold mt-5">Expert Mentors</h3>
+
+            <p className="mt-3 text-gray-600">
+              Learn from experienced instructors and industry professionals.
+            </p>
+          </div>
+
+          <div className="bg-white p-8 rounded-3xl shadow">
+            <div className="text-5xl">🚀</div>
+
+            <h3 className="text-2xl font-bold mt-5">Career Growth</h3>
+
+            <p className="mt-3 text-gray-600">
+              Improve your skills and prepare yourself for real-world
+              opportunities.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-linear-to-r from-blue-600 to-indigo-600">
-        <div className="mx-auto max-w-7xl px-6 text-center">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl mb-4">
-            Ready to Start Learning?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Create an account and enroll in your first course today.
-          </p>
-          <NavLink
-            to="/register"
-            className="inline-flex items-center rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-          >
-            Get Started Today
-          </NavLink>
-        </div>
+     
+      <section className="max-w-7xl mx-auto px-6 pb-20">
+        {!token ? (
+          // GUEST SECTION
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-[40px] p-14 text-center text-white shadow-2xl">
+            <h2 className="text-5xl font-bold">Ready to Start Learning?</h2>
+
+            <p className="mt-5 text-lg text-blue-100">
+              Create an account and enroll in your first premium course today.
+            </p>
+
+            <Link
+              to="/register"
+              className="inline-block mt-8 bg-white text-blue-600 px-10 py-4 rounded-2xl font-semibold hover:bg-gray-100"
+            >
+              Get Started
+            </Link>
+          </div>
+        ) : (
+    
+          <div className="bg-[#0f172a] rounded-[40px] p-10 shadow-2xl text-white">
+            {/* STATS */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-[#1e293b] p-8 rounded-3xl">
+                <h2 className="text-5xl font-bold text-blue-400">20+</h2>
+
+                <p className="mt-3 text-gray-400">Premium Courses</p>
+              </div>
+
+              <div className="bg-[#1e293b] p-8 rounded-3xl">
+                <h2 className="text-5xl font-bold text-purple-400">1500+</h2>
+
+                <p className="mt-3 text-gray-400">Active Students</p>
+              </div>
+
+              <div className="bg-[#1e293b] p-8 rounded-3xl">
+                <h2 className="text-5xl font-bold text-green-400">98%</h2>
+
+                <p className="mt-3 text-gray-400">Success Rate</p>
+              </div>
+            </div>
+
+            {/* WELCOME */}
+            <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+              <div>
+                <h2 className="text-4xl font-bold">Welcome Back 👋</h2>
+
+                <p className="mt-3 text-gray-400 text-lg">
+                  Continue learning and explore new courses to boost your
+                  career.
+                </p>
+              </div>
+
+              <Link
+                to="/courses"
+                className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-2xl shadow-lg"
+              >
+                Explore More Courses
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
