@@ -6,13 +6,7 @@ export const getCourses = async (req, res) => {
   try {
     const db = getDB();
 
-    const {
-      search,
-      category,
-      difficulty,
-      minPrice,
-      maxPrice,
-    } = req.query;
+    const { search, category, difficulty, minPrice, maxPrice } = req.query;
 
     let query = {};
 
@@ -51,7 +45,7 @@ export const getCourses = async (req, res) => {
         sampleCourses.map((course) => ({
           ...course,
           createdAt: new Date(),
-        }))
+        })),
       );
     }
 
@@ -73,11 +67,9 @@ export const getCourse = async (req, res) => {
       });
     }
 
-    const course = await db
-      .collection("courses")
-      .findOne({
-        _id: new ObjectId(req.params.id),
-      });
+    const course = await db.collection("courses").findOne({
+      _id: new ObjectId(req.params.id),
+    });
 
     if (!course) {
       return res.status(404).json({
@@ -95,12 +87,10 @@ export const createCourse = async (req, res) => {
   try {
     const db = getDB();
 
-    const result = await db
-      .collection("courses")
-      .insertOne({
-        ...req.body,
-        createdAt: new Date(),
-      });
+    const result = await db.collection("courses").insertOne({
+      ...req.body,
+      createdAt: new Date(),
+    });
 
     res.json(result);
   } catch (error) {
@@ -118,7 +108,7 @@ export const updateCourse = async (req, res) => {
       },
       {
         $set: req.body,
-      }
+      },
     );
 
     res.json({

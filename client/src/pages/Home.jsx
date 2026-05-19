@@ -1,26 +1,40 @@
 import { Link } from "react-router";
 
 export default function Home() {
+
   const token = localStorage.getItem("token");
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
-     
+
+      {/* HERO SECTION */}
       <section className="max-w-7xl mx-auto px-6 py-20">
+
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          
+
+          {/* LEFT CONTENT */}
           <div>
+
             <h1 className="text-6xl font-extrabold leading-tight text-[#0f172a]">
+
               Learn New Skills
-              <span className="text-blue-500"> Online</span>
+              <span className="text-blue-500">
+                {" "}Online
+              </span>
+
             </h1>
 
             <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-              Browse courses, enroll easily, and learn step by step at your own
-              pace with our premium learning platform.
+
+              Browse premium courses,
+              enroll easily, and improve
+              your skills with expert-led
+              learning paths.
+
             </p>
 
             <div className="flex gap-5 mt-8">
+
               <Link
                 to="/courses"
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl shadow-lg"
@@ -36,64 +50,115 @@ export default function Home() {
                   Create Account
                 </Link>
               )}
+
             </div>
+
           </div>
 
-        
+          {/* RIGHT LOGO CARD */}
           <div className="flex justify-center">
+
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 w-[320px] h-[320px] rounded-[40px] shadow-2xl flex items-center justify-center">
-              <h2 className="text-white text-5xl font-extrabold">CourseNest</h2>
+
+              <h2 className="text-white text-5xl font-extrabold">
+                CourseNest
+              </h2>
+
             </div>
+
           </div>
+
         </div>
+
       </section>
 
-    
+      {/* FEATURES SECTION */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
+
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-3xl shadow">
-            <div className="text-5xl">📚</div>
 
-            <h3 className="text-2xl font-bold mt-5">20+ Courses</h3>
+          <div className="bg-white p-8 rounded-3xl shadow-lg">
 
-            <p className="mt-3 text-gray-600">
-              Explore premium courses from web development to AI and
-              cybersecurity.
-            </p>
-          </div>
+            <div className="text-5xl">
+              📚
+            </div>
 
-          <div className="bg-white p-8 rounded-3xl shadow">
-            <div className="text-5xl">🎓</div>
-
-            <h3 className="text-2xl font-bold mt-5">Expert Mentors</h3>
+            <h3 className="text-2xl font-bold mt-5">
+              25+ Courses
+            </h3>
 
             <p className="mt-3 text-gray-600">
-              Learn from experienced instructors and industry professionals.
+
+              Explore courses in web
+              development, AI, cloud,
+              cybersecurity, and more.
+
             </p>
+
           </div>
 
-          <div className="bg-white p-8 rounded-3xl shadow">
-            <div className="text-5xl">🚀</div>
+          <div className="bg-white p-8 rounded-3xl shadow-lg">
 
-            <h3 className="text-2xl font-bold mt-5">Career Growth</h3>
+            <div className="text-5xl">
+              🎓
+            </div>
+
+            <h3 className="text-2xl font-bold mt-5">
+              Expert Instructors
+            </h3>
 
             <p className="mt-3 text-gray-600">
-              Improve your skills and prepare yourself for real-world
-              opportunities.
+
+              Learn directly from industry
+              experts and experienced
+              mentors.
+
             </p>
+
           </div>
+
+          <div className="bg-white p-8 rounded-3xl shadow-lg">
+
+            <div className="text-5xl">
+              🚀
+            </div>
+
+            <h3 className="text-2xl font-bold mt-5">
+              Career Growth
+            </h3>
+
+            <p className="mt-3 text-gray-600">
+
+              Gain practical skills and
+              prepare yourself for
+              real-world opportunities.
+
+            </p>
+
+          </div>
+
         </div>
+
       </section>
 
-     
+      {/* CONDITIONAL SECTION */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
+
         {!token ? (
+
           // GUEST SECTION
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-[40px] p-14 text-center text-white shadow-2xl">
-            <h2 className="text-5xl font-bold">Ready to Start Learning?</h2>
+
+            <h2 className="text-5xl font-bold">
+              Ready to Start Learning?
+            </h2>
 
             <p className="mt-5 text-lg text-blue-100">
-              Create an account and enroll in your first premium course today.
+
+              Create your account and
+              start learning from premium
+              courses today.
+
             </p>
 
             <Link
@@ -102,40 +167,73 @@ export default function Home() {
             >
               Get Started
             </Link>
+
           </div>
+
         ) : (
-    
+
+          // LOGGED IN SECTION
           <div className="bg-[#0f172a] rounded-[40px] p-10 shadow-2xl text-white">
+
             {/* STATS */}
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-[#1e293b] p-8 rounded-3xl">
-                <h2 className="text-5xl font-bold text-blue-400">20+</h2>
 
-                <p className="mt-3 text-gray-400">Premium Courses</p>
+              <div className="bg-[#1e293b] p-8 rounded-3xl">
+
+                <h2 className="text-5xl font-bold text-blue-400">
+                  25+
+                </h2>
+
+                <p className="mt-3 text-gray-400">
+                  Premium Courses
+                </p>
+
               </div>
 
               <div className="bg-[#1e293b] p-8 rounded-3xl">
-                <h2 className="text-5xl font-bold text-purple-400">1500+</h2>
 
-                <p className="mt-3 text-gray-400">Active Students</p>
+                <h2 className="text-5xl font-bold text-purple-400">
+                  1500+
+                </h2>
+
+                <p className="mt-3 text-gray-400">
+                  Active Students
+                </p>
+
               </div>
 
               <div className="bg-[#1e293b] p-8 rounded-3xl">
-                <h2 className="text-5xl font-bold text-green-400">98%</h2>
 
-                <p className="mt-3 text-gray-400">Success Rate</p>
+                <h2 className="text-5xl font-bold text-green-400">
+                  98%
+                </h2>
+
+                <p className="mt-3 text-gray-400">
+                  Course Completion Rate
+                </p>
+
               </div>
+
             </div>
 
-            {/* WELCOME */}
+            {/* WELCOME SECTION */}
             <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+
               <div>
-                <h2 className="text-4xl font-bold">Welcome Back 👋</h2>
+
+                <h2 className="text-4xl font-bold">
+                  Welcome Back 👋
+                </h2>
 
                 <p className="mt-3 text-gray-400 text-lg">
-                  Continue learning and explore new courses to boost your
+
+                  Continue learning and
+                  explore new premium
+                  courses to boost your
                   career.
+
                 </p>
+
               </div>
 
               <Link
@@ -144,10 +242,15 @@ export default function Home() {
               >
                 Explore More Courses
               </Link>
+
             </div>
+
           </div>
+
         )}
+
       </section>
+
     </div>
   );
 }

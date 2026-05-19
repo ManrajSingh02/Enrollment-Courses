@@ -1,106 +1,153 @@
 import { ObjectId } from "mongodb";
+
 import { getDB } from "../config/db.js";
 
-export const enrollCourse = async (req, res) => {
+
+
+// ==========================
+// ENROLL COURSE
+// ==========================
+export const enrollCourse = async (
+  req,
+  res
+) => {
   try {
+
     const db = getDB();
 
-    const existing = await db
-      .collection("enrollments")
-      .findOne({
-        studentId: req.user.id,
-        courseId: req.body.courseId,
-      });
+    const courseId =
+      new ObjectId(req.body.courseId);
+
+    // CHECK IF ALREADY ENROLLED
+    const existing =
+      await db
+        .collection("enrollments")
+        .findOne({
+          studentId: req.user.id,
+          courseId,
+        });
 
     if (existing) {
+
       return res.status(400).json({
-        message: "Already enrolled",
+        message:
+          "You already enrolled in this course",
       });
     }
 
-    const enrollment = {
-      studentId: req.user.id,
-      courseId: req.body.courseId,
-      status: "active",
-      enrolledAt: new Date(),
-    };
-
-    const result = await db
-      .collection("enrollments")
-      .insertOne(enrollment);
-
-    res.json(result);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
-export const myEnrollments = async (req, res) => {
-  try {
-    const db = getDB();
-
-    const enrollments = await db
-      .collection("enrollments")
-      .aggregate([
-        {
-          $match: {
-            studentId: req.user.id,
-          },
-        },
-        {
-          $addFields: {
-            courseObjectId: {
-              $convert: {
-                input: "$courseId",
-                to: "objectId",
-                onError: null,
-                onNull: null,
-              },
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: "courses",
-            localField: "courseObjectId",
-            foreignField: "_id",
-            as: "course",
-          },
-        },
-        {
-          $unwind: {
-            path: "$course",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $project: {
-            courseObjectId: 0,
-          },
-        },
-      ])
-      .toArray();
-
-    res.json(enrollments);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
-export const removeEnrollment = async (req, res) => {
-  try {
-    const db = getDB();
-
+    // INSERT ENROLLMENT
     await db
       .collection("enrollments")
-      .deleteOne({
-        _id: new ObjectId(req.params.id),
+      .insertOne({
+        studentId: req.user.id,
+        courseId,
+        status: "active",
+        enrolledAt: new Date(),
       });
 
     res.json({
-      message: "Enrollment removed",
+      message:
+        "Course enrolled successfully",
     });
+
   } catch (error) {
-    res.status(500).json(error);
+
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        "Enrollment failed",
+    });
   }
 };
+
+
+
+
+// ==========================
+// GET MY ENROLLMENTS
+// ==========================
+export const myEnrollments =
+  async (req, res) => {
+
+    try {
+
+      const db = getDB();
+
+      const enrollments =
+        await db
+          .collection("enrollments")
+          .aggregate([
+            {
+              $match: {
+                studentId:
+                  req.user.id,
+              },
+            },
+
+            {
+              $lookup: {
+                from: "courses",
+                localField:
+                  "courseId",
+                foreignField:
+                  "_id",
+                as: "course",
+              },
+            },
+
+            {
+              $unwind: "$course",
+            },
+          ])
+          .toArray();
+
+      res.json(enrollments);
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+        message:
+          "Failed to fetch enrollments",
+      });
+    }
+  };
+
+
+
+
+// ==========================
+// REMOVE ENROLLMENT
+// ==========================
+export const removeEnrollment =
+  async (req, res) => {
+
+    try {
+
+      const db = getDB();
+
+      await db
+        .collection("enrollments")
+        .deleteOne({
+          _id: new ObjectId(
+            req.params.id
+          ),
+        });
+
+      res.json({
+        message:
+          "Enrollment removed",
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+        message:
+          "Failed to remove enrollment",
+      });
+    }
+  };

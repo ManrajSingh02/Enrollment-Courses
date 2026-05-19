@@ -1,78 +1,229 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/useAuth.js";
-import Loader from "../components/Loader.jsx";
-import { apiRequest } from "../services/api.js";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import { Link } from "react-router";
+
+const API =
+  import.meta.env.VITE_API_URL;
 
 export default function MyCourses() {
-  const { user } = useAuth();
-  const [enrollments, setEnrollments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
+  const [courses, setCourses] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const token =
+    localStorage.getItem("token");
+
+
+
+  // ==========================
+  // FETCH ENROLLED COURSES
+  // ==========================
   useEffect(() => {
-    apiRequest("/enrollments/my", { auth: true })
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${API}/enrollments/my`, {
+      headers: {
+        authorization: token,
+      },
+    })
+      .then((res) => res.json())
       .then((data) => {
-        setEnrollments(Array.isArray(data) ? data : []);
+
+        setCourses(data);
+
         setLoading(false);
+
       })
       .catch((error) => {
-        setError(error.message || "We could not load your courses right now.");
+
+        console.log(error);
+
         setLoading(false);
+
       });
+
   }, []);
 
-  if (loading) return <Loader />;
-  if (error) return <div className="p-6 text-center text-red-600">{error}</div>;
+
+
+
+  // ==========================
+  // LOADING STATE
+  // ==========================
+  if (loading) {
+    return (
+      <div className="text-center mt-20 text-3xl font-bold">
+        Loading...
+      </div>
+    );
+  }
+
+
+
+
+  // ==========================
+  // NOT LOGGED IN
+  // ==========================
+  if (!token) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+
+        <h1 className="text-4xl font-bold">
+          Please Login First
+        </h1>
+
+        <Link
+          to="/login"
+          className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
+        >
+          Go To Login
+        </Link>
+
+      </div>
+    );
+  }
+
+
+
 
   return (
-    <main className="min-h-[calc(100vh-65px)] bg-gray-100">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-4xl font-bold text-gray-950">My Courses</h1>
-        <p className="mt-2 text-gray-600">Welcome back, {user?.name}!</p>
+    <div className="min-h-screen bg-[#f8fafc]">
 
-        {enrollments.length === 0 ? (
-          <div className="mt-10 text-center">
-            <p className="text-gray-500">
-              You haven't enrolled in any courses yet.
+      <div className="max-w-7xl mx-auto px-6 py-12">
+
+        <h1 className="text-6xl font-extrabold mb-14">
+
+          My Courses
+
+        </h1>
+
+
+
+
+        {/* EMPTY STATE */}
+        {courses.length === 0 ? (
+
+          <div className="bg-white p-14 rounded-[40px] shadow-lg text-center">
+
+            <h2 className="text-4xl font-bold">
+
+              No Enrolled Courses
+
+            </h2>
+
+            <p className="mt-5 text-gray-600 text-lg">
+
+              Explore courses and start
+              learning today.
+
             </p>
-            <a
-              href="/courses"
-              className="mt-4 inline-block rounded bg-blue-600 px-6 py-3 font-semibold text-white"
+
+            <Link
+              to="/courses"
+              className="inline-block mt-8 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
             >
               Browse Courses
-            </a>
+            </Link>
+
           </div>
+
         ) : (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {enrollments.map((enrollment) => (
-              <article
-                key={enrollment._id}
-                className="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-200"
-              >
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-blue-700">
-                    {enrollment.course?.category || "Course"}
-                  </p>
-                  <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-700">
-                    Enrolled
-                  </span>
+
+          // COURSES GRID
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+            {courses.map((item) => {
+
+              const course =
+                item.course;
+
+              return (
+                <div
+                  key={item._id}
+                  className="bg-white rounded-[35px] overflow-hidden shadow-xl hover:scale-[1.02] transition duration-300"
+                >
+
+                  {/* IMAGE */}
+                  <img
+                    src={course.image}
+                    alt={course.title}
+                    className="w-full h-56 object-cover"
+                  />
+
+
+
+
+                  {/* CONTENT */}
+                  <div className="p-6">
+
+                    <div className="flex justify-between items-center">
+
+                      <span className="bg-blue-100 text-blue-600 px-4 py-2 rounded-xl text-sm">
+
+                        {course.category}
+
+                      </span>
+
+                      <span className="font-bold text-lg">
+
+                        ₹{course.price}
+
+                      </span>
+
+                    </div>
+
+                    <h2 className="text-2xl font-bold mt-5">
+
+                      {course.title}
+
+                    </h2>
+
+                    <p className="mt-4 text-gray-600 line-clamp-3">
+
+                      {course.description}
+
+                    </p>
+
+                    <div className="flex justify-between mt-6 text-sm text-gray-500">
+
+                      <span>
+                        {course.duration}
+                      </span>
+
+                      <span>
+                        {course.difficulty}
+                      </span>
+
+                    </div>
+
+                    <Link
+                      to={`/course/${course._id}`}
+                      className="block text-center mt-8 bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-2xl"
+                    >
+                      View Details
+                    </Link>
+
+                  </div>
+
                 </div>
-                <h2 className="text-xl font-bold text-gray-950">
-                  {enrollment.course?.title || "Course unavailable"}
-                </h2>
-                <p className="mt-2 text-sm text-gray-600">
-                  {enrollment.course?.description ||
-                    "This course is no longer available."}
-                </p>
-                <div className="mt-4 text-sm text-gray-500">
-                  Enrolled on{" "}
-                  {new Date(enrollment.enrolledAt).toLocaleDateString()}
-                </div>
-              </article>
-            ))}
+              );
+            })}
+
           </div>
         )}
+
       </div>
-    </main>
+
+    </div>
   );
 }
