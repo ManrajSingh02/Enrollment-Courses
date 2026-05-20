@@ -10,10 +10,11 @@ import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import dns from "node:dns";
 dotenv.config();
 
 const app = express();
-
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 app.use(cors());
 
 app.use(express.json());
