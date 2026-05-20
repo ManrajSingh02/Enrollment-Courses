@@ -1,35 +1,27 @@
-import dotenv from "dotenv";
-import dns from "node:dns";
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
 dotenv.config();
-dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
-if (!process.env.MONGO_URI) {
-  throw new Error("MONGO_URI is missing in server/.env");
-}
-
-const client = new MongoClient(
-  process.env.MONGO_URI,
-  {
-    serverSelectionTimeoutMS: 10000,
-  }
-);
+const client = new MongoClient(process.env.MONGO_URI);
 
 let db;
 
-export const connectDB =
-  async () => {
-
+const connectDB = async () => {
+  try {
     await client.connect();
 
-    db = client.db(
-      process.env.DB_NAME
-    );
+    db = client.db("courseEnrollmentDB");
 
-    console.log(
-      "MongoDB Connected"
-    );
-  };
+    console.log("MongoDB Connected");
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
 
-export const getDB = () => db;
+const getDB = () => db;
+
+export { getDB };
+
+export default connectDB;

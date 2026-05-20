@@ -1,36 +1,75 @@
 import { useEffect, useState } from "react";
 
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const API = import.meta.env.VITE_API_URL;
 
+const getStoredToken = () => {
+  const token = localStorage.getItem("token");
+
+  return token && token !== "null" && token !== "undefined" ? token : null;
+};
+
 export default function MyCourses() {
+  const navigate = useNavigate();
+
   const [courses, setCourses] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem("token");
+  const [error, setError] = useState("");
+
+  const [token, setToken] = useState(getStoredToken);
+
+  const enrolledCourses = courses
+    .map((item) => ({
+      ...item,
+      course: Array.isArray(item.course) ? item.course[0] : item.course,
+    }))
+    .filter((item) => item.course);
 
 
   useEffect(() => {
     if (!token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
       setLoading(false);
       return;
     }
 
     fetch(`${API}/enrollments/my`, {
       headers: {
-        authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        const data = await res.json();
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setToken(null);
+            navigate("/login");
+          }
+
+          throw new Error(data.message || "Failed to fetch courses");
+        }
+
+        return data;
+      })
       .then((data) => {
-        setCourses(data);
+        setCourses(Array.isArray(data) ? data : []);
 
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+
+        setError(error.message);
+
+        setCourses([]);
 
         setLoading(false);
       });
@@ -58,12 +97,29 @@ export default function MyCourses() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h1 className="text-4xl font-bold">Unable To Load Courses</h1>
+
+        <p className="mt-5 text-gray-600 text-lg">{error}</p>
+
+        <Link
+          to="/login"
+          className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
+        >
+          Login Again
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <h1 className="text-6xl font-extrabold mb-14">My Courses</h1>
 
-        {courses.length === 0 ? (
+        {enrolledCourses.length === 0 ? (
           <div className="bg-white p-14 rounded-[40px] shadow-lg text-center">
             <h2 className="text-4xl font-bold">No Enrolled Courses</h2>
 
@@ -81,7 +137,7 @@ export default function MyCourses() {
         ) : (
       
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {courses.map((item) => {
+            {enrolledCourses.map((item) => {
               const course = item.course;
 
               return (
@@ -89,7 +145,7 @@ export default function MyCourses() {
                   key={item._id}
                   className="bg-white rounded-[35px] overflow-hidden shadow-xl hover:scale-[1.02] transition duration-300"
                 >
-                  {/* IMAGE */}
+                 
                   <img
                     src={course.image}
                     alt={course.title}

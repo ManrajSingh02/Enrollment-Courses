@@ -1,142 +1,192 @@
 import { ObjectId } from "mongodb";
-
 import { getDB } from "../config/db.js";
 
+const getUserIds = (userId) => {
+  const ids = [userId];
 
+  if (ObjectId.isValid(userId)) {
+    ids.push(new ObjectId(userId));
+  }
 
-export const enrollCourse = async (
-  req,
-  res
-) => {
+  return ids;
+};
+
+const getCourseIds = (courseId) => {
+  if (!courseId) {
+    return [];
+  }
+
+  const ids = [courseId];
+  const courseIdString = courseId.toString();
+
+  if (ObjectId.isValid(courseIdString)) {
+    ids.push(new ObjectId(courseIdString));
+  }
+
+  return ids;
+};
+
+const findCourseById = async (db, courseId) => {
+  const courseIds = getCourseIds(courseId);
+
+  if (courseIds.length === 0) {
+    return null;
+  }
+
+  return db.collection("courses").findOne({
+    _id: {
+      $in: courseIds,
+    },
+  });
+};
+
+const enrollCourse = async (req, res) => {
   try {
-
     const db = getDB();
 
-    const courseId =
-      new ObjectId(req.body.courseId);
+    const { courseId } = req.body;
 
-    const existing =
-      await db
-        .collection("enrollments")
-        .findOne({
-          studentId: req.user.id,
-          courseId,
-        });
-
-    if (existing) {
-
+    if (!ObjectId.isValid(courseId)) {
       return res.status(400).json({
-        message:
-          "You already enrolled in this course",
+        message: "Invalid course",
       });
     }
 
-    await db
+    const courseObjectId = new ObjectId(courseId);
+
+    const userIds = getUserIds(req.user.id);
+
+    const course = await findCourseById(db, courseObjectId);
+
+    if (!course) {
+      return res.status(404).json({
+        message: "Course not found",
+      });
+    }
+
+    const existingEnrollment = await db
       .collection("enrollments")
-      .insertOne({
-        studentId: req.user.id,
-        courseId,
-        status: "active",
-        enrolledAt: new Date(),
+      .findOne({
+        $or: [
+          {
+            userId: {
+              $in: userIds,
+            },
+          },
+          {
+            studentId: {
+              $in: userIds,
+            },
+          },
+        ],
+        courseId: {
+          $in: [courseId, courseObjectId],
+        },
       });
 
-    res.json({
-      message:
-        "Course enrolled successfully",
+    if (existingEnrollment) {
+      await db.collection("enrollments").updateOne(
+        {
+          _id: existingEnrollment._id,
+        },
+        {
+          $set: {
+            userId: req.user.id,
+            courseId: courseObjectId,
+          },
+        }
+      );
+
+      return res.json({
+        message: "Already enrolled",
+      });
+    }
+
+    const enrollment = {
+      userId: req.user.id,
+      courseId: courseObjectId,
+      createdAt: new Date(),
+    };
+
+    await db.collection("enrollments").insertOne(enrollment);
+
+    res.status(201).json({
+      message: "Enrollment successful",
     });
-
   } catch (error) {
-
     console.log(error);
 
     res.status(500).json({
-      message:
-        "Enrollment failed",
+      message: "Server error",
     });
   }
 };
 
+const getMyEnrollments = async (req, res) => {
+  try {
+    const db = getDB();
 
+    const userIds = getUserIds(req.user.id);
 
-
-export const myEnrollments =
-  async (req, res) => {
-
-    try {
-
-      const db = getDB();
-
-      const enrollments =
-        await db
-          .collection("enrollments")
-          .aggregate([
-            {
-              $match: {
-                studentId:
-                  req.user.id,
-              },
+    const enrollments = await db
+      .collection("enrollments")
+      .find({
+        $or: [
+          {
+            userId: {
+              $in: userIds,
             },
-
-            {
-              $lookup: {
-                from: "courses",
-                localField:
-                  "courseId",
-                foreignField:
-                  "_id",
-                as: "course",
-              },
+          },
+          {
+            studentId: {
+              $in: userIds,
             },
+          },
+        ],
+      })
+      .toArray();
 
-            {
-              $unwind: "$course",
-            },
-          ])
-          .toArray();
+    const enrollmentsWithCourses = (
+      await Promise.all(
+        enrollments.map(async (enrollment) => ({
+          ...enrollment,
+          course: await findCourseById(db, enrollment.courseId),
+        }))
+      )
+    ).filter((enrollment) => enrollment.course);
 
-      res.json(enrollments);
+    res.json(enrollmentsWithCourses);
+  } catch (error) {
+    console.log(error);
 
-    } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
 
-      console.log(error);
+const removeEnrollment = async (req, res) => {
+  try {
+    const db = getDB();
 
-      res.status(500).json({
-        message:
-          "Failed to fetch enrollments",
-      });
-    }
-  };
+    await db.collection("enrollments").deleteOne({
+      _id: new ObjectId(req.params.id),
+    });
 
+    res.json({
+      message: "Enrollment removed",
+    });
+  } catch (error) {
+    console.log(error);
 
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
 
-
-export const removeEnrollment =
-  async (req, res) => {
-
-    try {
-
-      const db = getDB();
-
-      await db
-        .collection("enrollments")
-        .deleteOne({
-          _id: new ObjectId(
-            req.params.id
-          ),
-        });
-
-      res.json({
-        message:
-          "Enrollment removed",
-      });
-
-    } catch (error) {
-
-      console.log(error);
-
-      res.status(500).json({
-        message:
-          "Failed to remove enrollment",
-      });
-    }
-  };
+export {
+  enrollCourse,
+  getMyEnrollments,
+  removeEnrollment,
+};

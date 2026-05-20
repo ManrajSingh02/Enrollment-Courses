@@ -1,5 +1,4 @@
 const sampleCourses = [
-
   {
     title: "Python for Beginners",
     description:
@@ -10,7 +9,7 @@ const sampleCourses = [
     duration: "6 Weeks",
     instructor: "Michael Brown",
     image:
-      "https://images.unsplash.com/photo-1526379095098-d400fd0bf935",
+      "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -25,7 +24,7 @@ const sampleCourses = [
     duration: "9 Weeks",
     instructor: "Sophia Taylor",
     image:
-      "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -40,7 +39,7 @@ const sampleCourses = [
     duration: "8 Weeks",
     instructor: "David Lee",
     image:
-      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d",
+      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -55,7 +54,7 @@ const sampleCourses = [
     duration: "7 Weeks",
     instructor: "William Clark",
     image:
-      "https://images.unsplash.com/photo-1510511459019-5dda7724fd87",
+      "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -70,7 +69,7 @@ const sampleCourses = [
     duration: "10 Weeks",
     instructor: "Olivia Martinez",
     image:
-      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -85,7 +84,7 @@ const sampleCourses = [
     duration: "5 Weeks",
     instructor: "Emma Wilson",
     image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -100,7 +99,7 @@ const sampleCourses = [
     duration: "4 Weeks",
     instructor: "Daniel Harris",
     image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -115,7 +114,7 @@ const sampleCourses = [
     duration: "12 Weeks",
     instructor: "James Anderson",
     image:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -130,7 +129,7 @@ const sampleCourses = [
     duration: "4 Weeks",
     instructor: "Sarah Johnson",
     image:
-      "https://images.unsplash.com/photo-1504639725590-34d0984388bd",
+      "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -145,7 +144,7 @@ const sampleCourses = [
     duration: "8 Weeks",
     instructor: "Chris Evans",
     image:
-      "https://images.unsplash.com/photo-1555066931-4365d14bab8c",
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -160,7 +159,7 @@ const sampleCourses = [
     duration: "6 Weeks",
     instructor: "Robert King",
     image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa",
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -175,7 +174,7 @@ const sampleCourses = [
     duration: "9 Weeks",
     instructor: "Lisa White",
     image:
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c",
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -190,7 +189,7 @@ const sampleCourses = [
     duration: "7 Weeks",
     instructor: "Alex Johnson",
     image:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -205,7 +204,7 @@ const sampleCourses = [
     duration: "8 Weeks",
     instructor: "Ryan Cooper",
     image:
-      "https://images.unsplash.com/photo-1605379399642-870262d3d051",
+      "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
   },
@@ -220,11 +219,10 @@ const sampleCourses = [
     duration: "10 Weeks",
     instructor: "Sophia Carter",
     image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=100&w=1600&auto=format&fit=crop",
     availability: true,
     createdAt: new Date(),
-  }
-
+  },
 ];
 
 export default sampleCourses;

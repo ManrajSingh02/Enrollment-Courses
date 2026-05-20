@@ -1,10 +1,12 @@
 import { Link } from "react-router";
 
 export default function CourseCard({ course }) {
+  if (!course) {
+    return null;
+  }
+
   return (
     <div className="bg-[#081028] rounded-xl overflow-hidden shadow-lg">
-
- 
       <img
         src={course.image}
         alt={course.title}
@@ -12,13 +14,9 @@ export default function CourseCard({ course }) {
       />
 
       <div className="p-5">
-        <h2 className="text-white text-xl font-bold">
-          {course.title}
-        </h2>
+        <h2 className="text-white text-xl font-bold">{course.title}</h2>
 
-        <p className="text-gray-300 mt-2 line-clamp-3">
-          {course.description}
-        </p>
+        <p className="text-gray-300 mt-2 line-clamp-3">{course.description}</p>
 
         <div className="flex justify-between mt-4 text-white">
           <span>{course.category}</span>

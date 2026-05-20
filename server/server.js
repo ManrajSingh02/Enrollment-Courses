@@ -3,15 +3,15 @@ import express from "express";
 import cors from "cors";
 
 import dotenv from "dotenv";
-
-import { connectDB } from "./config/db.js";
+dotenv.config();
+import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import dns from "node:dns";
-dotenv.config();
+
 
 const app = express();
 dns.setServers(["8.8.8.8", "1.1.1.1"]);

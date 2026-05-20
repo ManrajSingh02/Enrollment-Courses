@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 
 const API = import.meta.env.VITE_API_URL;
 
+const getStoredToken = () => {
+  const token = localStorage.getItem("token");
+
+  return token && token !== "null" && token !== "undefined" ? token : null;
+};
+
 export default function CourseDetails() {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
 
@@ -30,64 +38,76 @@ export default function CourseDetails() {
   }, [id]);
 
 
-  const enroll = async () => {
+  const handleEnroll = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getStoredToken();
 
       if (!token) {
-        alert("Please login first");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
+        alert("Please login first");
+        navigate("/login");
         return;
       }
 
       setEnrolling(true);
 
-      const res = await fetch(`${API}/enrollments`, {
+      const response = await fetch(`${API}/enrollments`, {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
-
-          authorization: token,
+          Authorization: `Bearer ${token}`,
         },
-
         body: JSON.stringify({
           courseId: id,
         }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (!res.ok) {
-        alert(data.message);
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
-        setEnrolling(false);
-
+        alert("Your login session expired. Please login again.");
+        navigate("/login");
         return;
       }
 
-      alert(data.message);
+      if (!response.ok) {
+        if (data.message === "Already enrolled") {
+          alert("You are already enrolled in this course");
+          navigate("/my-courses");
+          return;
+        }
+
+        throw new Error(data.message || "Enrollment failed");
+      }
+
+      alert("Enrollment successful");
+
+      navigate("/my-courses");
     } catch (error) {
       console.log(error);
-
-      alert("Enrollment failed");
+      alert(error.message);
     } finally {
       setEnrolling(false);
     }
   };
-
-
+    
   if (loading) {
     return (
-      <div className="text-center mt-20 text-3xl font-bold">Loading...</div>
+      <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
+        <h2 className="text-2xl font-bold text-[#0f172a]">Loading...</h2>
+      </div>
     );
   }
 
-
   if (!course) {
     return (
-      <div className="text-center mt-20">
-        <h1 className="text-4xl font-bold">Course Not Found</h1>
+      <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold text-[#0f172a]">Course not found</h2>
 
         <Link
           to="/courses"
@@ -98,6 +118,8 @@ export default function CourseDetails() {
       </div>
     );
   }
+  
+  
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
@@ -186,7 +208,7 @@ export default function CourseDetails() {
               </div>
 
               <button
-                onClick={enroll}
+                onClick={handleEnroll}
                 disabled={enrolling}
                 className="w-full bg-blue-500 hover:bg-blue-600 py-4 rounded-2xl text-lg font-semibold"
               >

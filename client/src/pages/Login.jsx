@@ -14,13 +14,17 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
 
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
+
   const submit = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
 
-      const res = await fetch(`${API}/auth/login`, {
+      const res = await fetch(
+        `${API}${isAdminLogin ? "/admin/login" : "/auth/login"}`,
+        {
         method: "POST",
 
         headers: {
@@ -28,7 +32,8 @@ export default function Login() {
         },
 
         body: JSON.stringify(form),
-      });
+        }
+      );
 
       const text = await res.text();
 
@@ -42,11 +47,29 @@ export default function Login() {
         return;
       }
 
+      if (!res.ok || !data.token) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        alert(data.message || "Login failed");
+        return;
+      }
+
       localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(
+          data.user || {
+            name: "Admin",
+            email: form.email,
+            role: data.role || "admin",
+          }
+        )
+      );
 
-      alert("Login Successful");
+      alert(`${isAdminLogin ? "Admin" : "Login"} Successful`);
 
-      navigate("/");
+      navigate(isAdminLogin ? "/admin" : "/");
     } catch (error) {
       console.log(error);
 
@@ -62,7 +85,31 @@ export default function Login() {
         onSubmit={submit}
         className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md"
       >
-        <h1 className="text-4xl font-bold text-center mb-8">Login</h1>
+        <h1 className="text-4xl font-bold text-center mb-8">
+          {isAdminLogin ? "Admin Login" : "Login"}
+        </h1>
+
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => setIsAdminLogin(false)}
+            className={`py-3 rounded-xl ${
+              !isAdminLogin ? "bg-blue-500 text-white" : "bg-gray-100"
+            }`}
+          >
+            User
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsAdminLogin(true)}
+            className={`py-3 rounded-xl ${
+              isAdminLogin ? "bg-blue-500 text-white" : "bg-gray-100"
+            }`}
+          >
+            Admin
+          </button>
+        </div>
 
         <input
           type="email"
@@ -94,7 +141,7 @@ export default function Login() {
           disabled={loading}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-xl"
         >
-          {loading ? "Loading..." : "Login"}
+          {loading ? "Loading..." : isAdminLogin ? "Admin Login" : "Login"}
         </button>
       </form>
     </div>
