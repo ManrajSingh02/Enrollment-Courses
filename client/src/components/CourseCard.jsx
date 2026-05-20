@@ -4,7 +4,7 @@ export default function CourseCard({ course }) {
   return (
     <div className="bg-[#081028] rounded-xl overflow-hidden shadow-lg">
 
-      {/* Course Image */}
+ 
       <img
         src={course.image}
         alt={course.title}

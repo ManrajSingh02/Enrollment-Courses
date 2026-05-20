@@ -27,7 +27,7 @@ export default function Courses() {
       );
   }, [search]);
 
-  // Pagination Logic
+
   const lastIndex =
     page * coursesPerPage;
 
@@ -62,7 +62,7 @@ export default function Courses() {
         {courses.length} courses
       </p>
 
-      {/* Courses */}
+    
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
 
         {currentCourses.map(
@@ -76,7 +76,6 @@ export default function Courses() {
 
       </div>
 
-      {/* Pagination */}
       <div className="flex gap-3 justify-center mt-10">
 
         {[

@@ -7,12 +7,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
 
-      {/* HERO SECTION */}
+
       <section className="max-w-7xl mx-auto px-6 py-20">
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
 
-          {/* LEFT CONTENT */}
+       
           <div>
 
             <h1 className="text-6xl font-extrabold leading-tight text-[#0f172a]">
@@ -55,7 +55,7 @@ export default function Home() {
 
           </div>
 
-          {/* RIGHT LOGO CARD */}
+          
           <div className="flex justify-center">
 
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 w-[320px] h-[320px] rounded-[40px] shadow-2xl flex items-center justify-center">
@@ -72,7 +72,7 @@ export default function Home() {
 
       </section>
 
-      {/* FEATURES SECTION */}
+  
       <section className="max-w-7xl mx-auto px-6 pb-20">
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -141,12 +141,11 @@ export default function Home() {
 
       </section>
 
-      {/* CONDITIONAL SECTION */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
 
         {!token ? (
 
-          // GUEST SECTION
+
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-[40px] p-14 text-center text-white shadow-2xl">
 
             <h2 className="text-5xl font-bold">
@@ -172,10 +171,10 @@ export default function Home() {
 
         ) : (
 
-          // LOGGED IN SECTION
+         
           <div className="bg-[#0f172a] rounded-[40px] p-10 shadow-2xl text-white">
 
-            {/* STATS */}
+          
             <div className="grid md:grid-cols-3 gap-6">
 
               <div className="bg-[#1e293b] p-8 rounded-3xl">
@@ -216,7 +215,7 @@ export default function Home() {
 
             </div>
 
-            {/* WELCOME SECTION */}
+          
             <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-6">
 
               <div>

@@ -6,10 +6,6 @@ import sampleCourses from "../seed/sampleCourses.js";
 
 
 
-
-// ==========================
-// GET ALL COURSES
-// ==========================
 export const getCourses =
   async (req, res) => {
 
@@ -39,7 +35,6 @@ export const getCourses =
 
 
 
-      // AUTO INSERT SAMPLE COURSES
       if (courses.length === 0) {
 
         await db
@@ -71,9 +66,6 @@ export const getCourses =
 
 
 
-// ==========================
-// GET SINGLE COURSE
-// ==========================
 export const getCourseById =
   async (req, res) => {
 
@@ -113,10 +105,6 @@ export const getCourseById =
 
 
 
-
-// ==========================
-// CREATE COURSE
-// ==========================
 export const createCourse =
   async (req, res) => {
 

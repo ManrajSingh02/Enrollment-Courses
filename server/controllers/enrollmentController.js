@@ -4,9 +4,6 @@ import { getDB } from "../config/db.js";
 
 
 
-// ==========================
-// ENROLL COURSE
-// ==========================
 export const enrollCourse = async (
   req,
   res
@@ -18,7 +15,6 @@ export const enrollCourse = async (
     const courseId =
       new ObjectId(req.body.courseId);
 
-    // CHECK IF ALREADY ENROLLED
     const existing =
       await db
         .collection("enrollments")
@@ -35,7 +31,6 @@ export const enrollCourse = async (
       });
     }
 
-    // INSERT ENROLLMENT
     await db
       .collection("enrollments")
       .insertOne({
@@ -64,9 +59,6 @@ export const enrollCourse = async (
 
 
 
-// ==========================
-// GET MY ENROLLMENTS
-// ==========================
 export const myEnrollments =
   async (req, res) => {
 
@@ -118,9 +110,6 @@ export const myEnrollments =
 
 
 
-// ==========================
-// REMOVE ENROLLMENT
-// ==========================
 export const removeEnrollment =
   async (req, res) => {
 

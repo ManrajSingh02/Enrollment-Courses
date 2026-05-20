@@ -20,7 +20,7 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API}/api/auth/login`, {
+      const res = await fetch(`${API}/auth/login`, {
         method: "POST",
 
         headers: {

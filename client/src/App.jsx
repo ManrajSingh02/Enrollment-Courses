@@ -8,6 +8,7 @@ import CourseDetails from "./pages/CourseDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -26,6 +27,8 @@ export default function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/my-courses" element={<MyCourses />} />
+
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </>
   );

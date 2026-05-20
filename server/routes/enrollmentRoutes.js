@@ -1,6 +1,6 @@
 import express from "express";
 
-import authMiddleware from "../middleware/authMiddleware.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 import {
   enrollCourse,
@@ -10,17 +10,17 @@ import {
 
 const router = express.Router();
 
-router.post("/", authMiddleware, enrollCourse);
+router.post("/", protect, enrollCourse);
 
 router.get(
   "/my",
-  authMiddleware,
+  protect,
   myEnrollments
 );
 
 router.delete(
   "/:id",
-  authMiddleware,
+  protect,
   removeEnrollment
 );
 
