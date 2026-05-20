@@ -18,7 +18,7 @@ export default function MyCourses() {
       return;
     }
 
-    fetch(`${API}/api/enrollments/my`, {
+    fetch(`${API}/enrollments/my`, {
       headers: {
         authorization: token,
       },
