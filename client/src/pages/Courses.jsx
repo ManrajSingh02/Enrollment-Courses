@@ -16,7 +16,7 @@ export default function Courses() {
       try {
         setLoading(true);
 
-        const res = await fetch(`${API}/courses?search=${search}`);
+        const res = await fetch(`${API}/api/courses?search=${search}`);
 
         const data = await res.json();
 

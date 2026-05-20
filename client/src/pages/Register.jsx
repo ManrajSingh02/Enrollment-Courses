@@ -22,7 +22,7 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API}/auth/register`, {
+      const res = await fetch(`${API}/api/auth/register`, {
         method: "POST",
 
         headers: {

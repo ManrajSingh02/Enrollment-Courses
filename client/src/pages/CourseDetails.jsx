@@ -42,7 +42,7 @@ export default function CourseDetails() {
 
       setEnrolling(true);
 
-      const res = await fetch(`${API}/enrollments`, {
+      const res = await fetch(`${API}/api/enrollments`, {
         method: "POST",
 
         headers: {
