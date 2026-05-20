@@ -24,7 +24,7 @@ export const connectDB =
     await client.connect();
 
     db = client.db(
-      "courseEnrollmentDB"
+      process.env.DB_NAME
     );
 
     console.log(
