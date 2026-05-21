@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 export default function CourseCard({ course }) {
   if (!course) {
@@ -24,12 +24,12 @@ export default function CourseCard({ course }) {
           <span>₹{course.price}</span>
         </div>
 
-        <Link
+        <NavLink
           to={`/course/${course._id}`}
           className="block text-center bg-sky-500 hover:bg-sky-600 text-white py-3 rounded-lg mt-5"
         >
           View Details
-        </Link>
+        </NavLink>
       </div>
     </div>
   );

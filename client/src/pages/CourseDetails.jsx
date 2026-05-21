@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { useParams, Link, useNavigate } from "react-router";
+import { useParams, NavLink, useNavigate } from "react-router";
+
+import MessageModal from "../components/MessageModal";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -21,6 +23,17 @@ export default function CourseDetails() {
 
   const [enrolling, setEnrolling] = useState(false);
 
+  const [modal, setModal] = useState(null);
+
+  const closeModal = () => {
+    const nextPath = modal?.nextPath;
+
+    setModal(null);
+
+    if (nextPath) {
+      navigate(nextPath);
+    }
+  };
  
   useEffect(() => {
     fetch(`${API}/courses/${id}`)
@@ -46,8 +59,12 @@ export default function CourseDetails() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        alert("Please login first");
-        navigate("/login");
+        setModal({
+          title: "Login Required",
+          message: "Please login first",
+          type: "info",
+          nextPath: "/login",
+        });
         return;
       }
 
@@ -70,27 +87,42 @@ export default function CourseDetails() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        alert("Your login session expired. Please login again.");
-        navigate("/login");
+        setModal({
+          title: "Session Expired",
+          message: "Your login session expired. Please login again.",
+          type: "error",
+          nextPath: "/login",
+        });
         return;
       }
 
       if (!response.ok) {
         if (data.message === "Already enrolled") {
-          alert("You are already enrolled in this course");
-          navigate("/my-courses");
+          setModal({
+            title: "Already Enrolled",
+            message: "You are already enrolled in this course",
+            type: "info",
+            nextPath: "/my-courses",
+          });
           return;
         }
 
         throw new Error(data.message || "Enrollment failed");
       }
 
-      alert("Enrollment successful");
-
-      navigate("/my-courses");
+      setModal({
+        title: "Enrollment Successful",
+        message: "You have enrolled in this course successfully.",
+        type: "success",
+        nextPath: "/my-courses",
+      });
     } catch (error) {
       console.log(error);
-      alert(error.message);
+      setModal({
+        title: "Enrollment Failed",
+        message: error.message,
+        type: "error",
+      });
     } finally {
       setEnrolling(false);
     }
@@ -109,12 +141,12 @@ export default function CourseDetails() {
       <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold text-[#0f172a]">Course not found</h2>
 
-        <Link
+        <NavLink
           to="/courses"
           className="inline-block mt-6 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
         >
           Back To Courses
-        </Link>
+        </NavLink>
       </div>
     );
   }
@@ -218,6 +250,14 @@ export default function CourseDetails() {
           </div>
         </div>
       </div>
+
+      <MessageModal
+        open={Boolean(modal)}
+        title={modal?.title}
+        message={modal?.message}
+        type={modal?.type}
+        onClose={closeModal}
+      />
     </div>
   );
 }

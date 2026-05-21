@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -98,12 +98,12 @@ export default function Courses() {
                     <span className="font-bold">₹{course.price}</span>
                   </div>
 
-                  <Link
+                  <NavLink
                     to={`/course/${course._id}`}
                     className="block text-center bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-2xl mt-6"
                   >
                     View Details
-                  </Link>
+                  </NavLink>
                 </div>
               </div>
             ))}

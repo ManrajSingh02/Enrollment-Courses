@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router";
 
+import MessageModal from "../components/MessageModal";
+
 const API = import.meta.env.VITE_API_URL;
 
 export default function Login() {
@@ -16,6 +18,18 @@ export default function Login() {
 
   const [isAdminLogin, setIsAdminLogin] = useState(false);
 
+  const [modal, setModal] = useState(null);
+
+  const closeModal = () => {
+    const nextPath = modal?.nextPath;
+
+    setModal(null);
+
+    if (nextPath) {
+      navigate(nextPath);
+    }
+  };
+
   const submit = async (e) => {
     e.preventDefault();
 
@@ -25,14 +39,14 @@ export default function Login() {
       const res = await fetch(
         `${API}${isAdminLogin ? "/admin/login" : "/auth/login"}`,
         {
-        method: "POST",
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(form),
         },
-
-        body: JSON.stringify(form),
-        }
       );
 
       const text = await res.text();
@@ -42,7 +56,11 @@ export default function Login() {
       try {
         data = JSON.parse(text);
       } catch {
-        alert("Backend deployment error");
+        setModal({
+          title: "Login Failed",
+          message: "Backend deployment error",
+          type: "error",
+        });
 
         return;
       }
@@ -51,7 +69,11 @@ export default function Login() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        alert(data.message || "Login failed");
+        setModal({
+          title: "Login Failed",
+          message: data.message || "Login failed",
+          type: "error",
+        });
         return;
       }
 
@@ -63,17 +85,24 @@ export default function Login() {
             name: "Admin",
             email: form.email,
             role: data.role || "admin",
-          }
-        )
+          },
+        ),
       );
 
-      alert(`${isAdminLogin ? "Admin" : "Login"} Successful`);
-
-      navigate(isAdminLogin ? "/admin" : "/");
+      setModal({
+        title: `${isAdminLogin ? "Admin" : "Login"} Successful`,
+        message: "You are logged in successfully.",
+        type: "success",
+        nextPath: isAdminLogin ? "/admin" : "/",
+      });
     } catch (error) {
       console.log(error);
 
-      alert("Something went wrong");
+      setModal({
+        title: "Error",
+        message: "Something went wrong",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -144,6 +173,14 @@ export default function Login() {
           {loading ? "Loading..." : isAdminLogin ? "Admin Login" : "Login"}
         </button>
       </form>
+
+      <MessageModal
+        open={Boolean(modal)}
+        title={modal?.title}
+        message={modal?.message}
+        type={modal?.type}
+        onClose={closeModal}
+      />
     </div>
   );
 }

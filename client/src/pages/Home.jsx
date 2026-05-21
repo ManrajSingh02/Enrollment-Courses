@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 export default function Home() {
 
@@ -35,20 +35,20 @@ export default function Home() {
 
             <div className="flex gap-5 mt-8">
 
-              <Link
+              <NavLink
                 to="/courses"
                 className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl shadow-lg"
               >
                 Explore Courses
-              </Link>
+              </NavLink>
 
               {!token && (
-                <Link
+                <NavLink
                   to="/register"
                   className="bg-white border border-gray-300 hover:bg-gray-100 px-8 py-4 rounded-2xl shadow"
                 >
                   Create Account
-                </Link>
+                </NavLink>
               )}
 
             </div>
@@ -160,12 +160,12 @@ export default function Home() {
 
             </p>
 
-            <Link
+            <NavLink
               to="/register"
               className="inline-block mt-8 bg-white text-blue-600 px-10 py-4 rounded-2xl font-semibold hover:bg-gray-100"
             >
               Get Started
-            </Link>
+            </NavLink>
 
           </div>
 
@@ -235,12 +235,12 @@ export default function Home() {
 
               </div>
 
-              <Link
+              <NavLink
                 to="/courses"
                 className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-2xl shadow-lg"
               >
                 Explore More Courses
-              </Link>
+              </NavLink>
 
             </div>
 

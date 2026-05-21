@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router";
 
+import MessageModal from "../components/MessageModal";
+
 const API = import.meta.env.VITE_API_URL;
 
 export default function Register() {
@@ -15,6 +17,18 @@ export default function Register() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  const [modal, setModal] = useState(null);
+
+  const closeModal = () => {
+    const nextPath = modal?.nextPath;
+
+    setModal(null);
+
+    if (nextPath) {
+      navigate(nextPath);
+    }
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -35,17 +49,28 @@ export default function Register() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message);
+        setModal({
+          title: "Registration Failed",
+          message: data.message || "Registration failed",
+          type: "error",
+        });
         return;
       }
 
-      alert("Registration Successful");
-
-      navigate("/login");
+      setModal({
+        title: "Registration Successful",
+        message: "Your account has been created successfully.",
+        type: "success",
+        nextPath: "/login",
+      });
     } catch (error) {
       console.log(error);
 
-      alert("Something went wrong");
+      setModal({
+        title: "Error",
+        message: "Something went wrong",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -118,6 +143,14 @@ export default function Register() {
           {loading ? "Loading..." : "Register"}
         </button>
       </form>
+
+      <MessageModal
+        open={Boolean(modal)}
+        title={modal?.title}
+        message={modal?.message}
+        type={modal?.type}
+        onClose={closeModal}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Link, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -87,12 +87,12 @@ export default function MyCourses() {
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold">Please Login First</h1>
 
-        <Link
+        <NavLink
           to="/login"
           className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
         >
           Go To Login
-        </Link>
+        </NavLink>
       </div>
     );
   }
@@ -104,12 +104,12 @@ export default function MyCourses() {
 
         <p className="mt-5 text-gray-600 text-lg">{error}</p>
 
-        <Link
+        <NavLink
           to="/login"
           className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
         >
           Login Again
-        </Link>
+        </NavLink>
       </div>
     );
   }
@@ -127,12 +127,12 @@ export default function MyCourses() {
               Explore courses and start learning today.
             </p>
 
-            <Link
+            <NavLink
               to="/courses"
               className="inline-block mt-8 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl"
             >
               Browse Courses
-            </Link>
+            </NavLink>
           </div>
         ) : (
       
@@ -174,12 +174,12 @@ export default function MyCourses() {
                       <span>{course.difficulty}</span>
                     </div>
 
-                    <Link
+                    <NavLink
                       to={`/course/${course._id}`}
                       className="block text-center mt-8 bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-2xl"
                     >
                       View Details
-                    </Link>
+                    </NavLink>
                   </div>
                 </div>
               );
