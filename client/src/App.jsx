@@ -1,4 +1,6 @@
-import { Routes, Route } from "react-router";
+import { useEffect } from "react";
+
+import { Routes, Route, useLocation } from "react-router";
 
 import Navbar from "./components/Navbar";
 
@@ -10,10 +12,21 @@ import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
 import AdminDashboard from "./pages/AdminDashboard";
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+};
+
 export default function App() {
   return (
     <>
       <Navbar />
+      <ScrollToTop />
 
       <Routes>
         <Route path="/" element={<Home />} />

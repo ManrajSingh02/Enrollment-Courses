@@ -11,16 +11,18 @@ const Navbar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
+    if (!showDropdown) return;
+
     const handleScroll = () => {
       setShowDropdown(false);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [showDropdown]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -37,8 +39,16 @@ const Navbar = () => {
     <nav className="bg-[#06122f] text-white sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <NavLink to="/" className="text-3xl font-bold text-blue-500">
-            CourseNest
+          <NavLink
+            to="/"
+            className="flex items-center gap-3 text-3xl font-bold text-blue-500"
+          >
+            <img
+              src="/favicon.svg"
+              alt="CourseNest"
+              className="h-11 w-11 rounded-xl"
+            />
+            <span>CourseNest</span>
           </NavLink>
 
           <div className="hidden md:flex items-center gap-8">

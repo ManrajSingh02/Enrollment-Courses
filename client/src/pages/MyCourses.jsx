@@ -149,6 +149,8 @@ export default function MyCourses() {
                   <img
                     src={course.image}
                     alt={course.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-56 object-cover"
                   />
 
